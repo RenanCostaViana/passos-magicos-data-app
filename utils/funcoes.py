@@ -15,13 +15,11 @@ def carregar_dados(caminho="dados_limpos.csv"):
     df["IDA"] = pd.to_numeric(df["IDA"], errors="coerce")
     return df
 
-
 def carregar_modelo(caminho="modelo_passos_magicos.pkl"):
     """Carrega o modelo treinado."""
     with open(caminho, "rb") as f:
         model = pickle.load(f)
     return model
-
 
 # ============================================================
 # 2. FUNÇÃO DE PREVISÃO
@@ -32,7 +30,6 @@ def prever_risco(modelo, IAN, IDA, IEG, IAA, IPS, IPP, IPV, INDE):
     entrada = np.array([[IAN, IDA, IEG, IAA, IPS, IPP, IPV, INDE]])
     pred = modelo.predict(entrada)[0]
     return int(pred)
-
 
 # ============================================================
 # 3. GRÁFICOS PRINCIPAIS
@@ -53,7 +50,6 @@ def grafico_evolucao_ida(df):
     ax.set_title("Evolução do IDA (2022–2024)")
     return fig
 
-
 def grafico_heatmap(df):
     indicadores = ["IAN","IDA","IEG","IAA","IPS","IPP","IPV","INDE_2024"]
     fig, ax = plt.subplots(figsize=(10,6))
@@ -61,11 +57,9 @@ def grafico_heatmap(df):
     ax.set_title("Correlação entre Indicadores")
     return fig
 
-
 def grafico_pairplot(df):
     fig = sns.pairplot(df[["IEG","IDA","IPV"]], diag_kind="kde")
     return fig
-
 
 def grafico_iaa_ida_ieg(df):
     fig = sns.pairplot(df[["IAA", "IDA", "IEG"]], kind="reg", diag_kind="kde",
@@ -80,13 +74,11 @@ def grafico_ips_delta(df):
     ax.set_title("IPS como preditor de queda de desempenho")
     return fig
 
-
 def grafico_ipp_ian(df):
     fig, ax = plt.subplots(figsize=(8,5))
     sns.scatterplot(data=df, x="IPP", y="IAN", hue="ANO", ax=ax)
     ax.set_title("IPP x IAN — Confirmação da Adequação")
     return fig
-
 
 def grafico_corr_ipv(df):
     fig, ax = plt.subplots(figsize=(10,6))
@@ -95,14 +87,12 @@ def grafico_corr_ipv(df):
     ax.set_title("Correlação dos Indicadores com IPV")
     return fig
 
-
 def grafico_corr_inde(df):
     fig, ax = plt.subplots(figsize=(10,6))
     sns.heatmap(df[["IAN","IDA","IEG","IAA","IPS","IPP","IPV","INDE_2024"]].corr(),
                 annot=True, cmap="viridis", ax=ax)
     ax.set_title("INDE é Multidimensional?")
     return fig
-
 
 # ============================================================
 # 4. RANKING DE RISCO
