@@ -11,6 +11,8 @@ import pickle
 def carregar_dados(caminho="dados_limpos.csv"):
     """Carrega o CSV limpo usado pelo Streamlit."""
     df = pd.read_csv(caminho)
+    df["ANO"] = df["ANO"].astype(int)
+    df["IDA"] = pd.to_numeric(df["IDA"], errors="coerce")
     return df
 
 
@@ -108,7 +110,7 @@ def grafico_corr_inde(df):
 def ranking_risco(df):
     """Retorna os alunos com maior defasagem."""
     df_risco = df[df["DEFAS_UNICA"] > 0][
-        ["ID_ALUNO","NOME","DEFAS_UNICA","IDA","IEG","IPS"]
+        ["ID_ALUNO","DEFAS_UNICA","IDA","IEG","IPS"]
     ]
     df_risco = df_risco.sort_values(by="DEFAS_UNICA", ascending=False)
     return df_risco
