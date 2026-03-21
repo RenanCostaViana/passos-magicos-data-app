@@ -38,13 +38,14 @@ def prever_risco(modelo, IAN, IDA, IEG, IAA, IPS, IPP, IPV, INDE):
 # 3. GRÁFICOS PRINCIPAIS
 # ============================================================
 
-def grafico_defasagem_2024(df):
-    df_2024 = df[df["ANO"] == 2024]
-    fig, ax = plt.subplots(figsize=(6,4))
-    sns.countplot(data=df_2024, x="DEFAS_UNICA", ax=ax)
-    ax.set_title("Distribuição da Defasagem — 2024")
+def grafico_evolucao_ian(df):
+    fig, ax = plt.subplots(figsize=(10,6))
+    sns.lineplot(data=df, x="ANO", y="IAN", estimator="mean", ci=95, marker="o", ax=ax)
+    ax.set_title("Evolução do IAN ao longo dos anos")
+    ax.set_xlabel("Ano")
+    ax.set_ylabel("IAN médio")
+    ax.grid(True, alpha=0.3)
     return fig
-
 
 def grafico_evolucao_ida(df):
     fig, ax = plt.subplots(figsize=(6,4))
@@ -66,12 +67,12 @@ def grafico_pairplot(df):
     return fig
 
 
-def grafico_iaa_ida(df):
-    fig, ax = plt.subplots(figsize=(8,5))
-    sns.scatterplot(data=df, x="IAA", y="IDA", hue="ANO", ax=ax)
-    ax.set_title("IAA x IDA — Coerência entre Autoavaliação e Desempenho")
+def grafico_iaa_ida_ieg(df):
+    fig = sns.pairplot(df[["IAA", "IDA", "IEG"]], kind="reg", diag_kind="kde",
+    plot_kws={"line_kws": {"color": "red"}, "scatter_kws": {"alpha": 0.3}})
+    fig.suptitle("Relação entre Autopercepção (IAA), Desempenho (IDA) e Engajamento (IEG)",
+                 y=1.02, fontsize=16)
     return fig
-
 
 def grafico_ips_delta(df):
     fig, ax = plt.subplots(figsize=(8,5))

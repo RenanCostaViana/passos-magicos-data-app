@@ -7,12 +7,13 @@ import seaborn as sns
 from utils.funcoes import (
     carregar_dados,
     carregar_modelo,
+    grafico_evolucao_ian,
     prever_risco,
-    grafico_defasagem_2024,
+    grafico_evolucao_ian,
     grafico_evolucao_ida,
     grafico_heatmap,
     grafico_pairplot,
-    grafico_iaa_ida,
+    grafico_iaa_ida_ieg,
     grafico_ips_delta,
     grafico_ipp_ian,
     grafico_corr_ipv,
@@ -52,7 +53,7 @@ with tabs[0]:
 
     with col1:
         st.subheader("Defasagem – 2024")
-        st.pyplot(grafico_defasagem_2024(df))
+        st.pyplot(grafico_evolucao_ian(df))
 
     with col2:
         st.subheader("Evolução do IDA (2022–2024)")
@@ -73,7 +74,7 @@ with tabs[1]:
     pergunta = st.selectbox(
         "Selecione a análise:",
         [
-            "Defasagem 2024",
+            "Evolução do IAN ao longo dos anos",
             "Evolução do IDA",
             "Relação IEG x IDA x IPV",
             "IAA x IDA",
@@ -84,8 +85,8 @@ with tabs[1]:
         ]
     )
 
-    if pergunta == "Defasagem 2024":
-        st.pyplot(grafico_defasagem_2024(df))
+    if pergunta == "Evolução do IAN ao longo dos anos":
+        st.pyplot(grafico_evolucao_ian(df))
 
     elif pergunta == "Evolução do IDA":
         st.pyplot(grafico_evolucao_ida(df))
@@ -94,7 +95,7 @@ with tabs[1]:
         st.pyplot(grafico_pairplot(df))
 
     elif pergunta == "IAA x IDA":
-        st.pyplot(grafico_iaa_ida(df))
+        st.pyplot(grafico_iaa_ida_ieg(df))
 
     elif pergunta == "IPS como preditor de queda":
         st.pyplot(grafico_ips_delta(df))
