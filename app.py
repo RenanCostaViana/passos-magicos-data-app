@@ -1,135 +1,150 @@
-# Importando as bibliotecas
 import streamlit as st
 import pandas as pd
 import numpy as np
-from sklearn.model_selection import train_test_split
-from utils import OneHotEncodingNames, OrdinalFeature, MinMax
-from imblearn.over_sampling import SMOTE
-from sklearn.pipeline import Pipeline
-import joblib
-from joblib import load
+import matplotlib.pyplot as plt
+import seaborn as sns
 
-st.write('# Avaliação de nível de obesidade do paciente')
-
-# Carregando os dados
-dados = pd.read_csv(
-    'https://raw.githubusercontent.com/RenanCostaViana/PosTech-DataAnalytics/refs/heads/main/obesity-level/df_clean.csv'
+from utils.funcoes import (
+    carregar_dados,
+    carregar_modelo,
+    prever_risco,
+    grafico_defasagem_2024,
+    grafico_evolucao_ida,
+    grafico_heatmap,
+    grafico_pairplot,
+    grafico_iaa_ida,
+    grafico_ips_delta,
+    grafico_ipp_ian,
+    grafico_corr_ipv,
+    grafico_corr_inde,
+    ranking_risco
 )
 
-# Entradas do usuário
-st.write("### Gênero")
-input_genero = st.radio('Qual é o seu gênero biológico?', ['Masculino', 'Feminino'])
+# ============================================================
+# CONFIGURAÇÃO DO APP
+# ============================================================
 
-st.write("### Idade")
-input_idade = int(st.number_input('Digite a idade do paciente', 0))
+st.set_page_config(
+    page_title="Passos Mágicos – Datathon",
+    layout="wide"
+)
 
-st.write("### Altura")
-input_altura= float(st.number_input('Digite a altura do paciente', 0.01))
+st.title("📊 Plataforma Analítica – Passos Mágicos")
+st.markdown("### Datathon 2024 – Análises, Insights e Predição de Risco")
 
-st.write("### Peso")
-input_peso = float(st.number_input('Digite o peso do paciente', 0.1))
+# ============================================================
+# CARREGAR DADOS E MODELO
+# ============================================================
 
-st.write("### Histórico Familiar")
-input_historico= st.radio('Há histórico de obesidade na família?', ['Sim', 'Não'])
+df = carregar_dados()
+modelo = carregar_modelo()
 
-st.write("### FAVC")
-input_favc = st.radio('Consome alimentos altamente calóricos com frequência?', ['Sim', 'Não'])
+tabs = st.tabs(["📈 Dashboard", "🔍 Análises", "🤖 Modelo Preditivo", "🚨 Alunos em Risco"])
 
-st.write("### FCVC")
-input_fcvc = st.selectbox('Frequência de consumo de vegetais', dados['FCVC'].unique())
+# ============================================================
+# 1. DASHBOARD
+# ============================================================
 
-st.write("### NCP")
-input_ncp = st.selectbox('Número de refeições principais', dados['NCP'].unique())
+with tabs[0]:
+    st.header("📈 Dashboard Geral")
 
-st.write("### CAEC")
-input_caec = st.selectbox('Consumo de comida entre refeições', dados['CAEC'].unique())
+    col1, col2 = st.columns(2)
 
-st.write("### SMOKE")
-input_smoke = st.radio('O paciente fuma?', ['Sim', 'Não'])
+    with col1:
+        st.subheader("Defasagem – 2024")
+        st.pyplot(grafico_defasagem_2024(df))
 
-st.write("### CH2O")
-input_ch2o= st.selectbox('Consumo de água diário', dados['CH2O'].unique())
+    with col2:
+        st.subheader("Evolução do IDA (2022–2024)")
+        st.pyplot(grafico_evolucao_ida(df))
 
-st.write("### SCC")
-input_scc = st.radio('O paciente monitora a ingestão diária de calorias?', ['Sim', 'Não'])
+    st.markdown("---")
 
-st.write("### FAF")
-input_faf = st.selectbox('Frequência semanal de atividade física', dados['FAF'].unique())
+    st.subheader("Correlação entre Indicadores")
+    st.pyplot(grafico_heatmap(df))
 
-st.write("### TUE")
-input_tue = st.selectbox('Tempo diário usando dispositivos eletrônicos', dados['TUE'].unique())
+# ============================================================
+# 2. ANÁLISES DETALHADAS
+# ============================================================
 
-st.write("### CALC")
-input_calc = st.selectbox('Consumo de bebida alcoólica', dados['CALC'].unique())
+with tabs[1]:
+    st.header("🔍 Análises Detalhadas")
 
-st.write("### MTRANS")
-input_mtrans = st.selectbox('Meio de transporte habitual', dados['MTRANS'].unique())
+    pergunta = st.selectbox(
+        "Selecione a análise:",
+        [
+            "Defasagem 2024",
+            "Evolução do IDA",
+            "Relação IEG x IDA x IPV",
+            "IAA x IDA",
+            "IPS como preditor de queda",
+            "IPP confirma IAN?",
+            "Correlação com IPV",
+            "INDE é multidimensional?"
+        ]
+    )
 
-# Lista de todas as variáveis:
-novo_cliente = [input_genero, # Gender
-                input_idade, # Age
-                input_altura, # Height
-                input_peso, # Weight
-                input_historico, # family_history
-                input_favc, # FAVC
-                input_fcvc,  # FCVC
-                input_ncp,  # NCP
-                input_caec, # CAEC
-                input_smoke, # SMOKE
-                input_ch2o, # CH20
-                input_scc, # SCC
-                input_faf, # FAF
-                input_tue, # TUE
-                input_calc, # CALC
-                input_mtrans, # MTRANS
-                None # target (Obesity)
-                ]
+    if pergunta == "Defasagem 2024":
+        st.pyplot(grafico_defasagem_2024(df))
 
-# Separando os dados em treino e teste
-def data_split(df, test_size):
-    SEED = 1561651
-    treino_df, teste_df = train_test_split(df, test_size=test_size, random_state=SEED)
-    return treino_df.reset_index(drop=True), teste_df.reset_index(drop=True)
+    elif pergunta == "Evolução do IDA":
+        st.pyplot(grafico_evolucao_ida(df))
 
-treino_df, teste_df = data_split(dados, 0.2)
+    elif pergunta == "Relação IEG x IDA x IPV":
+        st.pyplot(grafico_pairplot(df))
 
-# Criando novo cliente
-cliente_predict_df = pd.DataFrame([novo_cliente],columns=teste_df.columns)
+    elif pergunta == "IAA x IDA":
+        st.pyplot(grafico_iaa_ida(df))
 
-# Concatenando novo cliente ao dataframe dos dados de teste
-teste_novo_cliente  = pd.concat([teste_df,cliente_predict_df],ignore_index=True)
+    elif pergunta == "IPS como preditor de queda":
+        st.pyplot(grafico_ips_delta(df))
 
-# Pipeline
-def pipeline_teste(df):
+    elif pergunta == "IPP confirma IAN?":
+        st.pyplot(grafico_ipp_ian(df))
 
-    pipeline = Pipeline([
-        ('OneHotEncoding', OneHotEncodingNames()),
-        ('ordinal_feature', OrdinalFeature()),
-        ('min_max_scaler', MinMax()),
-    ])
-    df_pipeline = pipeline.fit_transform(df)
-    return df_pipeline
+    elif pergunta == "Correlação com IPV":
+        st.pyplot(grafico_corr_ipv(df))
 
-# Aplicando a pipeline
-teste_novo_cliente = pipeline_teste(teste_novo_cliente)
+    elif pergunta == "INDE é multidimensional?":
+        st.pyplot(grafico_corr_inde(df))
 
-# Retirando a coluna target
-cliente_pred = teste_novo_cliente.drop(['Obesity'], axis=1)
+# ============================================================
+# 3. MODELO PREDITIVO
+# ============================================================
 
-# Dicionário de categorias após o OrdinalFeature
-obesity_labels = {
-    0: 'Abaixo do Peso',
-    1: 'Obesidade I',
-    2: 'Obesidade II',
-    3: 'Obesidade III',
-    4: 'Peso Normal',
-    5: 'Sobrepeso I',
-    6: 'Sobrepeso II'
-}
+with tabs[2]:
+    st.header("🤖 Previsão de Risco Individual")
 
-# Predições
-if st.button('Enviar'):
-    model = joblib.load('modelo/forest.joblib')
-    final_pred = model.predict(cliente_pred)
-    predicted_class = int(final_pred[-1])
-    st.success(f"### O nível de obesidade previsto para o paciente é: **{obesity_labels[predicted_class]}**")
+    st.markdown("Insira os indicadores do aluno:")
+
+    col1, col2 = st.columns(2)
+
+    with col1:
+        IAN = st.number_input("IAN", 0.0, 10.0, 5.0)
+        IDA = st.number_input("IDA", 0.0, 10.0, 5.0)
+        IEG = st.number_input("IEG", 0.0, 10.0, 5.0)
+        IAA = st.number_input("IAA", 0.0, 10.0, 5.0)
+
+    with col2:
+        IPS = st.number_input("IPS", 0.0, 10.0, 5.0)
+        IPP = st.number_input("IPP", 0.0, 10.0, 5.0)
+        IPV = st.number_input("IPV", 0.0, 10.0, 5.0)
+        INDE = st.number_input("INDE_2024", 0.0, 10.0, 5.0)
+
+    if st.button("Prever Risco"):
+        pred = prever_risco(modelo, IAN, IDA, IEG, IAA, IPS, IPP, IPV, INDE)
+
+        if pred == 1:
+            st.error("🚨 O aluno está em RISCO de defasagem.")
+        else:
+            st.success("✅ O aluno NÃO está em risco.")
+
+# ============================================================
+# 4. ALUNOS EM RISCO
+# ============================================================
+
+with tabs[3]:
+    st.header("🚨 Ranking de Alunos em Risco")
+
+    df_risco = ranking_risco(df)
+    st.dataframe(df_risco)
