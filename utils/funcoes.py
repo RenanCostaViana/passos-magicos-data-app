@@ -69,7 +69,7 @@ def grafico_iaa_ida_ieg(df):
         plot_kws={"line_kws": {"color": "red"}, "scatter_kws": {"alpha": 0.3}}
     )
 
-    g.figure.suptitle(
+    g.fig.suptitle(
         "Relação entre Autopercepção (IAA), Desempenho (IDA) e Engajamento (IEG)",
         y=1.02,
         fontsize=16
