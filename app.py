@@ -52,7 +52,7 @@ with tabs[0]:
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Defasagem – 2024")
+        st.subheader("Evolução do IAN ao longo dos anos")
         st.pyplot(grafico_evolucao_ian(df))
 
     with col2:
@@ -77,7 +77,7 @@ with tabs[1]:
             "Evolução do IAN ao longo dos anos",
             "Evolução do IDA",
             "Relação IEG x IDA x IPV",
-            "IAA x IDA",
+            "IAA x IDA x IEG",
             "IPS como preditor de queda",
             "IPP confirma IAN?",
             "Correlação com IPV",
@@ -94,7 +94,7 @@ with tabs[1]:
     elif pergunta == "Relação IEG x IDA x IPV":
         st.pyplot(grafico_pairplot(df))
 
-    elif pergunta == "IAA x IDA":
+    elif pergunta == "IAA x IDA x IEG":
         st.pyplot(grafico_iaa_ida_ieg(df))
 
     elif pergunta == "IPS como preditor de queda":

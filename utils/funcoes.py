@@ -62,11 +62,21 @@ def grafico_pairplot(df):
     return fig
 
 def grafico_iaa_ida_ieg(df):
-    fig = sns.pairplot(df[["IAA", "IDA", "IEG"]], kind="reg", diag_kind="kde",
-    plot_kws={"line_kws": {"color": "red"}, "scatter_kws": {"alpha": 0.3}})
-    fig.suptitle("Relação entre Autopercepção (IAA), Desempenho (IDA) e Engajamento (IEG)",
-                 y=1.02, fontsize=16)
-    return fig
+    g = sns.pairplot(
+        df[["IAA", "IDA", "IEG"]],
+        kind="reg",
+        diag_kind="kde",
+        plot_kws={"line_kws": {"color": "red"}, "scatter_kws": {"alpha": 0.3}}
+    )
+
+    g.figure.suptitle(
+        "Relação entre Autopercepção (IAA), Desempenho (IDA) e Engajamento (IEG)",
+        y=1.02,
+        fontsize=16
+    )
+
+    return g
+
 
 def grafico_ips_delta(df):
     fig, ax = plt.subplots(figsize=(8,5))
