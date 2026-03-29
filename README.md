@@ -26,7 +26,7 @@ O resultado é uma solução que combina análise exploratória, machine learnin
 ---
 
 ## Estrutura do Projeto
-
+```text
 projeto/
 │
 ├── app.py                     # Aplicação Streamlit
@@ -39,7 +39,7 @@ projeto/
 ├── requirements.txt           # Dependências do projeto
 ├── .gitignore                 # Arquivos ignorados pelo Git
 └── README.md                  # Este arquivo
-
+```
 
 ---
 
