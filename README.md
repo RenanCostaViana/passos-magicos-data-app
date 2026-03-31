@@ -1,4 +1,4 @@
-# Plataforma Analítica Passos Mágicos – Datathon 2024
+# Plataforma Analítica Passos Mágicos – 2024
 
 ## Objetivo do Projeto
 
