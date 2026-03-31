@@ -2,7 +2,7 @@
 
 ## Objetivo do Projeto
 
-Este projeto foi desenvolvido para o Datathon Passos Mágicos 2024 com o propósito de:
+Este projeto foi desenvolvido para o Datathon Passos Mágicos com o propósito de:
 
 - analisar indicadores pedagógicos dos alunos (IAN, IDA, IEG, IPS, IPP, IPV, IAA, INDE);
 - identificar padrões de desempenho, engajamento e percepção;
